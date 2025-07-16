@@ -1,0 +1,239 @@
+__pycache__/ : The term '__pycache__/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling 
+of the name, or if a path was included, verify that the path is correct and try again.
+At line:2 char:1
++ __pycache__/
++ ~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (__pycache__/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+*.py[cod] : The term '*.py[cod]' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the 
+name, or if a path was included, verify that the path is correct and try again.
+At line:3 char:1
++ *.py[cod]
++ ~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (*.py[cod]:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+*$py.class : The term '*$py.class' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of 
+the name, or if a path was included, verify that the path is correct and try again.
+At line:4 char:1
++ *$py.class
++ ~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (*$py.class:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+*.so : The term '*.so' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:5 char:1
++ *.so
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (*.so:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+.Python : The term '.Python' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the 
+name, or if a path was included, verify that the path is correct and try again.
+At line:6 char:1
++ .Python
++ ~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (.Python:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+build/ : The term 'build/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, 
+or if a path was included, verify that the path is correct and try again.
+At line:7 char:1
++ build/
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (build/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+develop-eggs/ : The term 'develop-eggs/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling 
+of the name, or if a path was included, verify that the path is correct and try again.
+At line:8 char:1
++ develop-eggs/
++ ~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (develop-eggs/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+dist/ : The term 'dist/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:9 char:1
++ dist/
++ ~~~~~
+    + CategoryInfo          : ObjectNotFound: (dist/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+downloads/ : The term 'downloads/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of 
+the name, or if a path was included, verify that the path is correct and try again.
+At line:10 char:1
++ downloads/
++ ~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (downloads/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+eggs/ : The term 'eggs/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:11 char:1
++ eggs/
++ ~~~~~
+    + CategoryInfo          : ObjectNotFound: (eggs/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+.eggs/ : The term '.eggs/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, 
+or if a path was included, verify that the path is correct and try again.
+At line:12 char:1
++ .eggs/
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (.eggs/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+lib/ : The term 'lib/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:13 char:1
++ lib/
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (lib/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+lib64/ : The term 'lib64/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, 
+or if a path was included, verify that the path is correct and try again.
+At line:14 char:1
++ lib64/
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (lib64/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+parts/ : The term 'parts/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, 
+or if a path was included, verify that the path is correct and try again.
+At line:15 char:1
++ parts/
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (parts/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+sdist/ : The term 'sdist/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, 
+or if a path was included, verify that the path is correct and try again.
+At line:16 char:1
++ sdist/
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (sdist/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+var/ : The term 'var/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:17 char:1
++ var/
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (var/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+wheels/ : The term 'wheels/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the 
+name, or if a path was included, verify that the path is correct and try again.
+At line:18 char:1
++ wheels/
++ ~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (wheels/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+*.egg-info/ : The term '*.egg-info/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of 
+the name, or if a path was included, verify that the path is correct and try again.
+At line:19 char:1
++ *.egg-info/
++ ~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (*.egg-info/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+.installed.cfg : The term '.installed.cfg' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the 
+spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:20 char:1
++ .installed.cfg
++ ~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (.installed.cfg:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+*.egg : The term '*.egg' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:21 char:1
++ *.egg
++ ~~~~~
+    + CategoryInfo          : ObjectNotFound: (*.egg:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+venv/ : The term 'venv/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:24 char:1
++ venv/
++ ~~~~~
+    + CategoryInfo          : ObjectNotFound: (venv/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+env/ : The term 'env/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:25 char:1
++ env/
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (env/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+ENV/ : The term 'ENV/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:26 char:1
++ ENV/
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (ENV/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+.vscode/ : The term '.vscode/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the 
+name, or if a path was included, verify that the path is correct and try again.
+At line:29 char:1
++ .vscode/
++ ~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (.vscode/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+.idea/ : The term '.idea/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, 
+or if a path was included, verify that the path is correct and try again.
+At line:30 char:1
++ .idea/
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (.idea/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+*.swp : The term '*.swp' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:31 char:1
++ *.swp
++ ~~~~~
+    + CategoryInfo          : ObjectNotFound: (*.swp:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+*.swo : The term '*.swo' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or 
+if a path was included, verify that the path is correct and try again.
+At line:32 char:1
++ *.swo
++ ~~~~~
+    + CategoryInfo          : ObjectNotFound: (*.swo:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+.DS_Store : The term '.DS_Store' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the 
+name, or if a path was included, verify that the path is correct and try again.
+At line:35 char:1
++ .DS_Store
++ ~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (.DS_Store:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+Thumbs.db : The term 'Thumbs.db' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the 
+name, or if a path was included, verify that the path is correct and try again.
+At line:36 char:1
++ Thumbs.db
++ ~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Thumbs.db:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+.streamlit/ : The term '.streamlit/' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of 
+the name, or if a path was included, verify that the path is correct and try again.
+At line:39 char:1
++ .streamlit/
++ ~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (.streamlit/:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
