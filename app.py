@@ -11,12 +11,47 @@ if not st.session_state.logged_in:
 else:
     dept = st.session_state["employee"]["department"]
     employee_name = st.session_state["employee"]["name"]
-    st.sidebar.success("Logged in as " + employee_name + " (" + dept + ")")
-    st.sidebar.page_link("pages/Home.py", label="🏠 Home Feed")
-    st.sidebar.page_link("pages/Campaigns.py", label="📢 Campaigns")
-    st.sidebar.page_link("pages/" + dept + ".py", label="🧩 " + dept + " Space")
-    st.sidebar.page_link("pages/Dashboard.py", label="📊 Dashboard")
     
+    # Show user info
+    st.sidebar.success("Logged in as " + employee_name + " (" + dept + ")")
+    
+    # Navigation
+    st.sidebar.markdown("---")
+    page = st.sidebar.selectbox(
+        "Navigate to:",
+        ["🏠 Home Feed", "📢 Campaigns", "🧩 " + dept + " Space", "📊 Dashboard"]
+    )
+    
+    # Logout button
     if st.sidebar.button("Logout"):
         st.session_state.logged_in = False
         st.rerun()
+    
+    # Load page content without debug messages
+    if "Home Feed" in page:
+        try:
+            with open("pages/Home.py", "r", encoding="utf-8") as f:
+                exec(f.read())
+        except Exception as e:
+            st.error(f"Error loading Home page: {e}")
+    
+    elif "Campaigns" in page:
+        try:
+            with open("pages/Campaigns.py", "r", encoding="utf-8") as f:
+                exec(f.read())
+        except Exception as e:
+            st.error(f"Error loading Campaigns page: {e}")
+    
+    elif "Dashboard" in page:
+        try:
+            with open("pages/Dashboard.py", "r", encoding="utf-8") as f:
+                exec(f.read())
+        except Exception as e:
+            st.error(f"Error loading Dashboard page: {e}")
+    
+    elif dept + " Space" in page:
+        try:
+            with open("pages/" + dept + ".py", "r", encoding="utf-8") as f:
+                exec(f.read())
+        except Exception as e:
+            st.error(f"Error loading {dept} page: {e}")

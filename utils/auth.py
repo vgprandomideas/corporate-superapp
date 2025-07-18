@@ -8,7 +8,15 @@ def login_user():
         name = st.text_input("Enter your name:")
         department = st.selectbox("Select your department:", 
                                 ["Engineering", "Design", "HR", "Finance", "Marketing", "Ops"])
-        role = st.radio("Select your role:", ["Team Member", "Manager", "Admin"])
+        role = st.selectbox("Select your role:", [
+            "Executive", 
+            "Admin",
+            "Chairman",
+            "CEO",
+            "President", 
+            "Vice President",
+            "Group President"
+        ])
         
         if st.form_submit_button("Login"):
             if name.strip():
