@@ -2,6 +2,14 @@ import os
 import json
 from datetime import datetime
 import streamlit as st
+import streamlit as st
+from utils.auth import login_user
+
+# Require login
+if "logged_in" not in st.session_state or not st.session_state.logged_in:
+    login_user()
+    st.stop()
+
 
 # ---------- File Path ----------
 CHAT_FILE = "data/chat.json"
