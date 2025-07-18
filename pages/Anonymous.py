@@ -3,42 +3,40 @@ import json
 import os
 from datetime import datetime
 
-FEEDBACK_FILE = "data/anonymous_feedback.json"
+FEEDBACK_FILE = "data/feedback.json"
 
 def load_feedback():
     if os.path.exists(FEEDBACK_FILE):
-        with open(FEEDBACK_FILE, "r") as f:
-            return json.load(f)
+        try:
+            with open(FEEDBACK_FILE, "r") as f:
+                return json.load(f)
+        except:
+            return []
     return []
 
-def save_feedback(data):
-    with open(FEEDBACK_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+def save_feedback(feedback_list):
+    try:
+        with open(FEEDBACK_FILE, "w") as f:
+            json.dump(feedback_list, f, indent=2)
+    except Exception as e:
+        st.error(f"Error saving feedback: {e}")
 
-feedback_list = load_feedback()
-employee = st.session_state["employee"]
-is_admin = employee["role"] == "Admin"
+st.title("🔒 Anonymous Feedback Box")
+st.markdown("Your identity will not be recorded. Share concerns, suggestions, or ideas freely.")
 
-st.title("🔒 Anonymous Feedback Portal")
+route_options = ["HR", "Engineering", "Marketing", "Leadership", "General"]
+route_to = st.selectbox("Route this feedback to:", route_options)
+feedback_text = st.text_area("Your feedback (no login trace)")
 
-# Anonymous Submission
-with st.expander("✍️ Submit Anonymous Feedback"):
-    message = st.text_area("Your Message (anonymous)")
-    route_to = st.selectbox("Route To", ["Department Head", "Specific Person", "C-Suite", "Admin"])
-    if st.button("Send Anonymously"):
-        feedback = {
-            "message": message,
+if st.button("Submit Feedback"):
+    if feedback_text.strip():
+        feedback_list = load_feedback()
+        feedback_list.append({
             "route_to": route_to,
+            "text": feedback_text.strip(),
             "timestamp": datetime.now().isoformat()
-        }
-        feedback_list.append(feedback)
+        })
         save_feedback(feedback_list)
-        st.success("Feedback sent anonymously.")
-
-# Admin View
-if is_admin:
-    st.subheader("📬 Anonymous Feedback Received")
-    for fb in feedback_list:
-        with st.container():
-            st.markdown(f"**To:** {fb['route_to']}  \n**Submitted:** {fb['timestamp']}")
-            st.write(fb["message"])
+        st.success("✅ Feedback submitted anonymously.")
+    else:
+        st.warning("Please write something before submitting.")
