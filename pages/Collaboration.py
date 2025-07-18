@@ -1,90 +1,96 @@
-import streamlit as st
-import json
 import os
+import json
 from datetime import datetime
+import streamlit as st
 
-# Paths
+# ---------- File Path ----------
 CHAT_FILE = "data/chat.json"
-ROOM_FILE = "data/rooms.json"
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Helper Functions
-def load_json(path):
-    if os.path.exists(path):
-        with open(path, "r") as f:
+# ---------- Utilities ----------
+def load_chat():
+    if os.path.exists(CHAT_FILE):
+        with open(CHAT_FILE, "r") as f:
             try:
                 return json.load(f)
             except json.JSONDecodeError:
                 return []
     return []
 
-def save_json(path, data):
-    with open(path, "w") as f:
+def save_chat(data):
+    with open(CHAT_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
-# Load session
-employee = st.session_state.get("employee", {})
-emp_name = employee.get("name")
-emp_id = employee.get("id")
+def add_message(room, sender, message, file_url=None):
+    chat = load_chat()
+    chat.append({
+        "room": room,
+        "sender": sender,
+        "message": message,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "file": file_url,
+        "replies": []
+    })
+    save_chat(chat)
 
-# Load rooms and chats
-rooms = load_json(ROOM_FILE)
-chat_data = load_json(CHAT_FILE)
+def add_reply(parent_index, sender, reply):
+    chat = load_chat()
+    if 0 <= parent_index < len(chat):
+        chat[parent_index]["replies"].append({
+            "sender": sender,
+            "message": reply,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M")
+        })
+    save_chat(chat)
 
-# Sidebar: Room Selector
-st.sidebar.subheader("📁 Chat Rooms")
-accessible_rooms = [room for room in rooms if (room["type"] == "public" or emp_id in room["members"])]
-room_names = [room["name"] for room in accessible_rooms]
-selected_room = st.sidebar.selectbox("Select Room", room_names)
+# ---------- UI Begins ----------
+st.title("💬 Team Collaboration Space")
+employee = st.session_state["employee"]
+user_name = employee["name"]
+user_dept = employee["department"]
+role = employee["role"]
+rooms = ["General", "Engineering", "Marketing", "Ops", "HR", "Finance", "Design"]
+room = st.sidebar.selectbox("📁 Select Room", rooms, index=rooms.index(user_dept) if user_dept in rooms else 0)
 
-# New Room Creator
-with st.sidebar.expander("➕ Create New Room"):
-    new_room = st.text_input("Room Name")
-    is_private = st.checkbox("Private Room?")
-    allowed_ids = st.text_input("Allowed Employee IDs (comma-separated)", "")
-    if st.button("Create Room"):
-        room_obj = {
-            "name": new_room,
-            "type": "private" if is_private else "public",
-            "members": [i.strip() for i in allowed_ids.split(",")] if is_private else []
-        }
-        rooms.append(room_obj)
-        save_json(ROOM_FILE, rooms)
-        st.success(f"Room '{new_room}' created.")
-        st.experimental_rerun()
+st.markdown(f"**Welcome {user_name}! You are in `{room}` Room.**")
+st.divider()
 
-# Header
-st.title(f"💬 Chat Room: {selected_room}")
-st.markdown(f"Welcome {emp_name}! You're now chatting in **{selected_room}**.")
-
-# Filter chat messages for room
-room_msgs = [msg for msg in chat_data if msg["room"] == selected_room]
-
-# Chat display
-for msg in room_msgs:
-    st.markdown(f"**{msg['sender']}** ({msg['timestamp']}): {msg['text']}")
-    if msg.get("file_url"):
-        st.markdown(f"[📎 Attached File]({msg['file_url']})")
-
-# Chat input
-with st.form("chat_form", clear_on_submit=True):
-    msg = st.text_input("Type your message")
-    uploaded_file = st.file_uploader("Attach file (optional)", type=["png", "jpg", "pdf", "mp4"])
-    if st.form_submit_button("Send"):
-        file_url = ""
+# ---------- New Message ----------
+with st.expander("➕ New Message"):
+    msg = st.text_area("Type your message:")
+    uploaded_file = st.file_uploader("Attach a file (optional)", type=["jpg", "png", "pdf", "docx", "mp4", "zip"])
+    if st.button("Send"):
+        file_url = None
         if uploaded_file:
-            file_path = os.path.join(UPLOAD_FOLDER, uploaded_file.name)
+            file_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
             with open(file_path, "wb") as f:
                 f.write(uploaded_file.read())
-            file_url = f"./{UPLOAD_FOLDER}/{uploaded_file.name}"
+            file_url = f"{UPLOAD_DIR}/{uploaded_file.name}"
+        if msg.strip() != "":
+            add_message(room, user_name, msg, file_url)
+            st.success("Message sent.")
+            st.rerun()
 
-        chat_data.append({
-            "room": selected_room,
-            "sender": emp_name,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "text": msg,
-            "file_url": file_url
-        })
-        save_json(CHAT_FILE, chat_data)
-        st.experimental_rerun()
+# ---------- Display Messages ----------
+chat_data = load_chat()
+for idx, entry in enumerate(reversed(chat_data)):
+    if entry["room"] != room:
+        continue
+
+    st.markdown(f"**{entry['sender']}** _({entry['timestamp']})_")
+    st.markdown(entry["message"])
+    if entry.get("file"):
+        st.markdown(f"[📎 Attached File]({entry['file']})")
+
+    # Reply Expander
+    with st.expander("💬 Replies"):
+        for r in entry["replies"]:
+            st.markdown(f"➡️ **{r['sender']}** _({r['timestamp']})_: {r['message']}")
+        with st.form(f"reply_form_{idx}"):
+            reply_text = st.text_input("Your reply")
+            submitted = st.form_submit_button("Reply")
+            if submitted and reply_text.strip():
+                add_reply(len(chat_data) - 1 - idx, user_name, reply_text)
+                st.success("Reply added.")
+                st.rerun()
