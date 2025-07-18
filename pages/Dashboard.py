@@ -1,55 +1,87 @@
 import streamlit as st
-from utils.data import load_data
-from collections import Counter
+import pandas as pd
+import matplotlib.pyplot as plt
+import json
+import os
 
-st.title("📊 Dashboard")
+st.title("📊 Admin Command Center")
+st.markdown("Monitor activity across all departments in real-time. This dashboard auto-updates based on task assignments, feedback, and post feeds.")
 
-# Check if user is logged in
-if "logged_in" not in st.session_state or not st.session_state.logged_in:
-    st.error("Please log in to view the dashboard.")
+# Admin Check
+employee = st.session_state["employee"]
+if employee["role"] != "Admin":
+    st.warning("⚠️ Admins only. You do not have permission to view this page.")
     st.stop()
 
-posts = load_data("posts.json")
-total = len(posts)
-dept = st.session_state["employee"]["department"]
-employee_name = st.session_state["employee"]["name"]
+# ---------- DATA LOADING ----------
+def load_json(file):
+    if os.path.exists(file):
+        with open(file, "r") as f:
+            try:
+                return json.load(f)
+            except json.JSONDecodeError:
+                return []
+    return []
 
-# Filter posts
-my_posts = [p for p in posts if p["author"] == employee_name]
-dept_posts = [p for p in posts if p["department"] == dept]
-campaigns = [p for p in posts if "campaign" in p.get("tags", [])]
+tasks = load_json("data/tasks.json")
+feedback = load_json("data/anonymous_feedback.json")
+posts = load_json("data/posts.json")
 
-# Metrics
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    st.metric("Total Posts", total)
-with col2:
-    st.metric(dept + " Dept Posts", len(dept_posts))
-with col3:
-    st.metric("My Contributions", len(my_posts))
-with col4:
-    st.metric("Active Campaigns", len(campaigns))
+# ---------- METRICS OVERVIEW ----------
+st.subheader("📌 Quick Summary")
+col1, col2, col3 = st.columns(3)
+col1.metric("Total Tasks", len(tasks))
+col2.metric("Anonymous Feedback", len(feedback))
+col3.metric("Posts Across Departments", len(posts))
 
-# Department breakdown
-st.subheader("Posts by Department")
-dept_counts = Counter([p["department"] for p in posts])
-for dept_name, count in dept_counts.items():
-    st.write("**" + dept_name + "**: " + str(count) + " posts")
+st.markdown("---")
 
-# Recent activity
-st.subheader("My Recent Posts")
-if my_posts:
-    for post in list(reversed(my_posts))[:5]:  # Show last 5 posts
-        with st.expander(post["title"] + " (" + post["department"] + ")"):
-            st.write(post["content"])
-            if "timestamp" in post:
-                st.caption("Posted on " + post["timestamp"][:10])
+# ---------- TASK STATUS CHART ----------
+st.subheader("✅ Task Completion Breakdown")
+if tasks:
+    task_status = pd.Series([t["status"] for t in tasks])
+    fig, ax = plt.subplots()
+    task_status.value_counts().plot.pie(autopct="%1.1f%%", ylabel="", ax=ax)
+    st.pyplot(fig)
 else:
-    st.info("You haven't posted anything yet.")
+    st.info("No tasks have been assigned yet.")
 
-# Top contributors
-st.subheader("Top Contributors")
-author_counts = Counter([p["author"] for p in posts])
-top_authors = author_counts.most_common(5)
-for author, count in top_authors:
-    st.write("**" + author + "**: " + str(count) + " posts")
+# ---------- FEEDBACK ROUTING CHART ----------
+st.subheader("📥 Anonymous Feedback Routing")
+if feedback:
+    feedback_routes = pd.Series([f["route_to"] for f in feedback])
+    fig, ax = plt.subplots()
+    feedback_routes.value_counts().plot.bar(color="teal", rot=0, ax=ax)
+    st.pyplot(fig)
+else:
+    st.info("No feedback received yet.")
+
+# ---------- DEPARTMENT TASK DISTRIBUTION ----------
+st.subheader("🏢 Tasks by Department")
+if tasks:
+    dept_counts = pd.Series([t["department"] for t in tasks])
+    fig, ax = plt.subplots()
+    dept_counts.value_counts().plot.barh(color="darkorange", ax=ax)
+    st.pyplot(fig)
+else:
+    st.info("No department task data yet.")
+
+# ---------- TOP USERS LEADERBOARD ----------
+st.subheader("🏆 Top Task Owners")
+if tasks:
+    owner_counts = pd.Series([t["assigned_to"] for t in tasks])
+    fig, ax = plt.subplots()
+    owner_counts.value_counts().head(10).plot.bar(color="purple", rot=30, ax=ax)
+    st.pyplot(fig)
+else:
+    st.info("No tasks assigned yet.")
+
+# ---------- POSTS BY DEPARTMENT ----------
+st.subheader("📰 Posts by Department")
+if posts:
+    post_depts = pd.Series([p["department"] for p in posts if "department" in p])
+    fig, ax = plt.subplots()
+    post_depts.value_counts().plot.bar(color="steelblue", ax=ax)
+    st.pyplot(fig)
+else:
+    st.info("No posts found.")

@@ -1,34 +1,29 @@
 [
-    {
-        "id": 1,
-        "title": "Welcome to our corporate app",
-        "content": "Hi, how are you doing",
-        "author": "Guruprasad",
-        "department": "All",
-        "tags": [],
-        "timestamp": "2025-07-16T14:39:38.342985"
-    },
-    {
-        "id": 2,
-        "title": "What's up man",
-        "content": "what's up is name of the campaign",
-        "author": "GUruprasad",
-        "department": "All",
-        "tags": [
-            "campaign",
-            "medium"
-        ],
-        "timestamp": "2025-07-16T14:47:36.725221"
-    },
-    {
-        "id": 3,
-        "title": "hi",
-        "content": "hi",
-        "author": "guru",
-        "department": "Engineering",
-        "tags": [
-            "update"
-        ],
-        "timestamp": "2025-07-16T14:55:54.631853"
-    }
+  {
+    "id": 1,
+    "title": "Welcome to our corporate app",
+    "content": "Hi, how are you doing",
+    "author": "Guruprasad",
+    "department": "All",
+    "tags": [],
+    "timestamp": "2025-07-16T14:39:38.342985"
+  },
+  {
+    "id": 2,
+    "title": "What's up man",
+    "content": "what's up is name of the campaign",
+    "author": "Guruprasad",
+    "department": "All",
+    "tags": ["campaign", "medium"],
+    "timestamp": "2025-07-16T14:47:36.725221"
+  },
+  {
+    "id": 3,
+    "title": "hi",
+    "content": "hi",
+    "author": "guru",
+    "department": "Engineering",
+    "tags": ["update"],
+    "timestamp": "2025-07-16T14:55:54.631853"
+  }
 ]

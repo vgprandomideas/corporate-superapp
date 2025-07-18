@@ -3,7 +3,6 @@ from utils.data import load_data, save_data, add_post
 
 st.title("🧩 HR Department Feed")
 
-# Check if user is logged in
 if "logged_in" not in st.session_state or not st.session_state.logged_in:
     st.error("Please log in to view the HR feed.")
     st.stop()
@@ -30,8 +29,7 @@ with st.form("HRPostForm"):
     
     if st.form_submit_button("Post to Department"):
         if title and content:
-            add_post(title, content, st.session_state["employee"]["name"], "HR", 
-                    [post_type.lower()])
+            add_post(title, content, st.session_state["employee"]["name"], "HR", [post_type.lower()])
             st.success("Posted to HR feed!")
             st.rerun()
         else:

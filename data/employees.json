@@ -1,0 +1,20 @@
+[
+  {
+    "id": "EMP001",
+    "name": "Guruprasad",
+    "department": "Engineering",
+    "role": "Executive"
+  },
+  {
+    "id": "EMP002",
+    "name": "Meera",
+    "department": "Marketing",
+    "role": "Manager"
+  },
+  {
+    "id": "EMP003",
+    "name": "Ravi",
+    "department": "HR",
+    "role": "Recruiter"
+  }
+]
