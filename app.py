@@ -19,11 +19,11 @@ employee_name = st.session_state["employee"]["name"]
 role = st.session_state["employee"]["role"]
 
 # Sidebar
-st.sidebar.image("https://placehold.co/180x80?text=Company+Logo", width=180)  # Replaced broken Imgur image
+st.sidebar.image("https://placehold.co/180x80?text=Company+Logo", width=180)  # Placeholder logo
 st.sidebar.success(f"👋 {employee_name} ({dept}, {role})")
 st.sidebar.markdown("---")
 
-# Navigation with Collaboration added
+# Navigation with new modules
 page = st.sidebar.selectbox(
     "📁 Navigate",
     [
@@ -33,7 +33,8 @@ page = st.sidebar.selectbox(
         "📊 Dashboard",
         "✅ Tasks",
         "🔒 Anonymous Feedback",
-        "🤝 Collaboration"
+        "🤝 Collaboration",
+        "📞 Video Room"
     ]
 )
 
@@ -41,7 +42,7 @@ if st.sidebar.button("Logout"):
     st.session_state.logged_in = False
     st.rerun()
 
-# Page Loader including Collaboration
+# Page Loader with new pages
 page_map = {
     "🏠 Home Feed": "pages/Home.py",
     "📢 Campaigns": "pages/Campaigns.py",
@@ -49,7 +50,8 @@ page_map = {
     "✅ Tasks": "pages/Tasks.py",
     "🔒 Anonymous Feedback": "pages/Anonymous.py",
     f"🧩 {dept} Space": f"pages/{dept}.py",
-    "🤝 Collaboration": "pages/Collaboration.py"
+    "🤝 Collaboration": "pages/Collaboration.py",
+    "📞 Video Room": "pages/VideoRoom.py"
 }
 
 try:
