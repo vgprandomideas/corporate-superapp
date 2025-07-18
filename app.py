@@ -23,24 +23,33 @@ st.sidebar.image("https://placehold.co/180x80?text=Company+Logo", width=180)  # 
 st.sidebar.success(f"👋 {employee_name} ({dept}, {role})")
 st.sidebar.markdown("---")
 
-# Navigation
+# Navigation with Collaboration added
 page = st.sidebar.selectbox(
     "📁 Navigate",
-    ["🏠 Home Feed", "📢 Campaigns", f"🧩 {dept} Space", "📊 Dashboard", "✅ Tasks", "🔒 Anonymous Feedback"]
+    [
+        "🏠 Home Feed",
+        "📢 Campaigns",
+        f"🧩 {dept} Space",
+        "📊 Dashboard",
+        "✅ Tasks",
+        "🔒 Anonymous Feedback",
+        "🤝 Collaboration"
+    ]
 )
 
 if st.sidebar.button("Logout"):
     st.session_state.logged_in = False
     st.rerun()
 
-# Page Loader
+# Page Loader including Collaboration
 page_map = {
     "🏠 Home Feed": "pages/Home.py",
     "📢 Campaigns": "pages/Campaigns.py",
     "📊 Dashboard": "pages/Dashboard.py",
     "✅ Tasks": "pages/Tasks.py",
     "🔒 Anonymous Feedback": "pages/Anonymous.py",
-    f"🧩 {dept} Space": f"pages/{dept}.py"
+    f"🧩 {dept} Space": f"pages/{dept}.py",
+    "🤝 Collaboration": "pages/Collaboration.py"
 }
 
 try:
