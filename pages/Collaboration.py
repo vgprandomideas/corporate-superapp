@@ -102,3 +102,63 @@ for idx, entry in enumerate(reversed(chat_data)):
                 add_reply(len(chat_data) - 1 - idx, user_name, reply_text)
                 st.success("Reply added.")
                 st.rerun()
+# ------------------- SCHEDULED MEETING SECTION -------------------
+import json
+from datetime import datetime, timedelta
+
+st.markdown("### 📅 Schedule a Meeting")
+
+# Load employees
+with open("data/employees.json", "r") as f:
+    employees = json.load(f)
+
+employee_names = [emp["name"] for emp in employees if emp["name"] != employee["name"]]
+selected_participants = st.multiselect("👥 Select Participants", employee_names)
+meeting_title = st.text_input("📝 Meeting Title")
+meeting_description = st.text_area("🧾 Description")
+meeting_datetime = st.datetime_input("📅 Date & Time", value=datetime.now() + timedelta(hours=1))
+
+if st.button("📌 Schedule Meeting"):
+    if not (selected_participants and meeting_title):
+        st.warning("Please fill in all required fields.")
+    else:
+        meeting = {
+            "title": meeting_title,
+            "description": meeting_description,
+            "organizer": employee["name"],
+            "participants": selected_participants,
+            "time": meeting_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        try:
+            with open("data/scheduled_meetings.json", "r") as f:
+                meetings = json.load(f)
+        except:
+            meetings = []
+
+        meetings.append(meeting)
+
+        with open("data/scheduled_meetings.json", "w") as f:
+            json.dump(meetings, f, indent=2)
+
+        st.success("✅ Meeting Scheduled!")
+
+# ------------------- UPCOMING MEETINGS -------------------
+st.markdown("### ⏳ Upcoming Meetings")
+
+try:
+    with open("data/scheduled_meetings.json", "r") as f:
+        meetings = json.load(f)
+except:
+    meetings = []
+
+if meetings:
+    for mtg in sorted(meetings, key=lambda x: x["time"]):
+        st.markdown(f"**{mtg['title']}**")
+        st.markdown(f"🕒 {mtg['time']}")
+        st.markdown(f"👤 Organizer: {mtg['organizer']}")
+        st.markdown(f"👥 Participants: {', '.join(mtg['participants'])}")
+        st.markdown(f"📝 {mtg['description']}")
+        st.markdown("---")
+else:
+    st.info("No meetings scheduled.")
