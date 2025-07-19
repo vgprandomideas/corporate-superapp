@@ -1,18 +1,17 @@
-# pages/Dashboard.py - Fixed with safe imports
+# pages/Dashboard.py - Perfect version with fixed layout and Plotly
 import streamlit as st
 import pandas as pd
 import json
 import os
 from datetime import datetime
 
-# Safe plotly import with fallback
+# Plotly import - suppress warnings
 try:
     import plotly.express as px
     import plotly.graph_objects as go
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
-    st.warning("⚠️ Plotly not available. Using basic charts.")
 
 # Session state check
 try:
@@ -55,6 +54,16 @@ st.markdown("""
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
+.chart-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
 .progress-bar {
     width: 100%;
     height: 20px;
@@ -69,29 +78,6 @@ st.markdown("""
     background: linear-gradient(90deg, #667eea, #764ba2);
     transition: width 0.3s ease;
 }
-
-.chart-container {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 1.5rem;
-    margin: 1rem 0;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin: 0.2rem;
-}
-
-.status-completed { background: #2ed573; color: white; }
-.status-pending { background: #ffa502; color: white; }
-.status-overdue { background: #ff4757; color: white; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -134,15 +120,13 @@ def load_dashboard_data():
                     data[key] = json.load(f)
             else:
                 data[key] = []
-        except Exception as e:
-            st.error(f"Error loading {filename}: {e}")
+        except Exception:
             data[key] = []
     
     return data
 
 # Load all data
-with st.spinner("🔄 Loading dashboard data..."):
-    dashboard_data = load_dashboard_data()
+dashboard_data = load_dashboard_data()
 
 tasks = dashboard_data["tasks"]
 feedback = dashboard_data["feedback"]
@@ -153,16 +137,14 @@ employees = dashboard_data["employees"]
 # ---------- KEY PERFORMANCE INDICATORS ----------
 st.subheader("📈 Key Performance Indicators")
 
-# Calculate advanced metrics
+# Calculate metrics
 total_tasks = len(tasks)
 completed_tasks = len([t for t in tasks if t.get("status") == "Completed"])
 pending_tasks = len([t for t in tasks if t.get("status") == "Pending"])
-overdue_tasks = len([t for t in tasks if t.get("status") == "Overdue"])
 completion_rate = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
-
-active_employees = len(set([t.get("assigned_to") for t in tasks if t.get("assigned_to")]))
 total_posts = len(posts)
 unread_feedback = len([f for f in feedback if f.get("status") == "unread"])
+active_employees = len(set([t.get("assigned_to") for t in tasks if t.get("assigned_to")]))
 
 # Enhanced metrics display
 col1, col2, col3, col4, col5 = st.columns(5)
@@ -215,125 +197,92 @@ with col5:
 
 st.markdown("---")
 
-# ---------- ANALYTICS SECTION ----------
+# ---------- ANALYTICS DASHBOARD WITH TABS ----------
 st.subheader("📊 Analytics Dashboard")
 
-# Create tabs for different views
+# Create tabs for different analytics views
 tab1, tab2, tab3, tab4 = st.tabs(["📈 Task Analytics", "🏢 Department Insights", "📬 Feedback Analysis", "📱 Activity Monitor"])
 
 with tab1:
     st.markdown("### 📈 Task Performance Analytics")
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Task Status Analysis
-        if tasks and PLOTLY_AVAILABLE:
-            status_counts = {}
-            for task in tasks:
-                status = task.get("status", "Unknown")
-                status_counts[status] = status_counts.get(status, 0) + 1
-            
-            fig_pie = px.pie(
-                values=list(status_counts.values()),
-                names=list(status_counts.keys()),
-                title="📊 Task Status Distribution",
-                color_discrete_sequence=px.colors.qualitative.Set3,
-                hole=0.4
-            )
-            fig_pie.update_traces(textposition='inside', textinfo='percent+label')
-            fig_pie.update_layout(height=400, font_size=14, title_font_size=18)
-            st.plotly_chart(fig_pie, use_container_width=True)
+    if tasks:
+        col1, col2 = st.columns(2)
         
-        elif tasks:
-            # Fallback: HTML progress bars
-            st.markdown("""
-            <div class="chart-container">
-                <h4>📊 Task Status Distribution</h4>
-            """, unsafe_allow_html=True)
-            
+        with col1:
+            # Task Status Analysis
             status_counts = {}
             for task in tasks:
                 status = task.get("status", "Unknown")
                 status_counts[status] = status_counts.get(status, 0) + 1
             
-            for status, count in status_counts.items():
-                percentage = (count / total_tasks * 100) if total_tasks > 0 else 0
-                
-                if status == "Completed":
-                    bar_color = "#2ed573"
-                elif status == "Pending":
-                    bar_color = "#ffa502"
-                else:
-                    bar_color = "#ff4757"
-                
-                st.markdown(f"""
-                <div style="margin: 1rem 0;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span><strong>{status}</strong></span>
-                        <span>{count} ({percentage:.1f}%)</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {percentage}%; background: {bar_color};"></div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            st.markdown("</div>", unsafe_allow_html=True)
-        else:
-            st.info("📝 No tasks available for analysis")
-    
-    with col2:
-        # Task Priority Distribution
-        if tasks and PLOTLY_AVAILABLE:
-            priority_counts = {}
-            for task in tasks:
-                priority = task.get("priority", "Medium")
-                priority_counts[priority] = priority_counts.get(priority, 0) + 1
-            
-            if priority_counts:
-                colors = {"High": "#ff4757", "Medium": "#ffa502", "Low": "#2ed573"}
-                fig_priority = px.bar(
-                    x=list(priority_counts.keys()),
-                    y=list(priority_counts.values()),
-                    title="🎯 Task Priority Distribution",
-                    color=list(priority_counts.keys()),
-                    color_discrete_map=colors
+            if PLOTLY_AVAILABLE and status_counts:
+                fig_pie = px.pie(
+                    values=list(status_counts.values()),
+                    names=list(status_counts.keys()),
+                    title="📊 Task Status Distribution",
+                    color_discrete_sequence=px.colors.qualitative.Set3,
+                    hole=0.4
                 )
-                fig_priority.update_layout(height=400, xaxis_title="Priority Level", yaxis_title="Number of Tasks", showlegend=False)
-                st.plotly_chart(fig_priority, use_container_width=True)
-        
-        elif tasks:
-            # Fallback for priority
-            st.markdown("""
-            <div class="chart-container">
-                <h4>🎯 Task Priority Distribution</h4>
-            """, unsafe_allow_html=True)
-            
-            priority_counts = {"High": 0, "Medium": 0, "Low": 0}
-            for task in tasks:
-                priority = task.get("priority", "Medium")
-                if priority in priority_counts:
-                    priority_counts[priority] += 1
-            
-            colors = {"High": "#ff4757", "Medium": "#ffa502", "Low": "#2ed573"}
-            
-            for priority, count in priority_counts.items():
-                percentage = (count / total_tasks * 100) if total_tasks > 0 else 0
-                
-                st.markdown(f"""
-                <div style="margin: 1rem 0;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span><strong>{priority}</strong></span>
-                        <span>{count} ({percentage:.1f}%)</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {percentage}%; background: {colors[priority]};"></div>
-                    </div>
-                </div>
+                fig_pie.update_traces(textposition='inside', textinfo='percent+label')
+                fig_pie.update_layout(height=400, font_size=14, title_font_size=18)
+                st.plotly_chart(fig_pie, use_container_width=True)
+            else:
+                # HTML fallback
+                st.markdown("""
+                <div class="chart-container">
+                    <h4>📊 Task Status Distribution</h4>
                 """, unsafe_allow_html=True)
+                
+                for status, count in status_counts.items():
+                    percentage = (count / total_tasks * 100) if total_tasks > 0 else 0
+                    
+                    if status == "Completed":
+                        bar_color = "#2ed573"
+                    elif status == "Pending":
+                        bar_color = "#ffa502"
+                    else:
+                        bar_color = "#ff4757"
+                    
+                    st.markdown(f"""
+                    <div style="margin: 1rem 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span><strong>{status}</strong></span>
+                            <span>{count} ({percentage:.1f}%)</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {percentage}%; background: {bar_color};"></div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+        
+        with col2:
+            # Department Distribution
+            dept_counts = {}
+            for task in tasks:
+                dept = task.get("department", "Unknown")
+                dept_counts[dept] = dept_counts.get(dept, 0) + 1
             
-            st.markdown("</div>", unsafe_allow_html=True)
+            if PLOTLY_AVAILABLE and dept_counts:
+                fig_bar = px.bar(
+                    x=list(dept_counts.keys()),
+                    y=list(dept_counts.values()),
+                    title="🏢 Tasks by Department",
+                    color=list(dept_counts.values()),
+                    color_continuous_scale="Blues"
+                )
+                fig_bar.update_layout(height=400, xaxis_title="Department", yaxis_title="Number of Tasks")
+                st.plotly_chart(fig_bar, use_container_width=True)
+            else:
+                # HTML fallback
+                st.markdown("**🏢 Tasks by Department**")
+                for dept, count in dept_counts.items():
+                    percentage = (count / total_tasks * 100) if total_tasks > 0 else 0
+                    st.write(f"• **{dept}**: {count} ({percentage:.1f}%)")
+    else:
+        st.info("📝 No tasks available for analysis")
 
 with tab2:
     st.markdown("### 🏢 Department Performance Insights")
@@ -352,7 +301,7 @@ with tab2:
                 dept_stats[dept]["pending"] += 1
         
         if PLOTLY_AVAILABLE:
-            # Create department performance chart
+            # Department performance chart
             dept_names = list(dept_stats.keys())
             completed_tasks_by_dept = [dept_stats[dept]["completed"] for dept in dept_names]
             pending_tasks_by_dept = [dept_stats[dept]["pending"] for dept in dept_names]
@@ -385,6 +334,8 @@ with tab2:
         
         efficiency_df = pd.DataFrame(efficiency_data)
         st.dataframe(efficiency_df, use_container_width=True, hide_index=True)
+    else:
+        st.info("📊 No department data available")
 
 with tab3:
     st.markdown("### 📬 Feedback Analysis Center")
@@ -398,7 +349,7 @@ with tab3:
                 route = fb.get("route_to", "Unknown")
                 feedback_routes[route] = feedback_routes.get(route, 0) + 1
             
-            if PLOTLY_AVAILABLE:
+            if PLOTLY_AVAILABLE and feedback_routes:
                 fig_feedback = px.bar(
                     x=list(feedback_routes.keys()),
                     y=list(feedback_routes.values()),
@@ -409,11 +360,10 @@ with tab3:
                 fig_feedback.update_layout(height=400)
                 st.plotly_chart(fig_feedback, use_container_width=True)
             else:
-                # Fallback feedback chart
                 st.markdown("**📥 Feedback Distribution**")
                 for route, count in feedback_routes.items():
                     percentage = (count / len(feedback) * 100) if len(feedback) > 0 else 0
-                    st.markdown(f"• **{route}**: {count} ({percentage:.1f}%)")
+                    st.write(f"• **{route}**: {count} ({percentage:.1f}%)")
         
         with col2:
             # Feedback status analysis
@@ -422,7 +372,7 @@ with tab3:
                 status = fb.get("status", "unread")
                 status_counts[status] = status_counts.get(status, 0) + 1
             
-            if PLOTLY_AVAILABLE:
+            if PLOTLY_AVAILABLE and status_counts:
                 fig_status = px.pie(
                     values=list(status_counts.values()),
                     names=list(status_counts.keys()),
@@ -435,7 +385,7 @@ with tab3:
                 st.markdown("**📊 Feedback Status**")
                 for status, count in status_counts.items():
                     percentage = (count / len(feedback) * 100) if len(feedback) > 0 else 0
-                    st.markdown(f"• **{status}**: {count} ({percentage:.1f}%)")
+                    st.write(f"• **{status}**: {count} ({percentage:.1f}%)")
     else:
         st.info("📬 No feedback data available yet")
 
@@ -469,13 +419,12 @@ with tab4:
     all_activity.sort(key=lambda x: x["Timestamp"], reverse=True)
     
     if all_activity:
-        st.markdown("### 🔄 Live Activity Feed")
         activity_df = pd.DataFrame(all_activity[:20])  # Show top 20
         st.dataframe(activity_df, use_container_width=True, hide_index=True)
     else:
         st.info("📱 No recent activity to display")
 
-# ---------- ADMIN ACTIONS ----------
+# ---------- ADMIN ACTIONS (MOVED TO BOTTOM) ----------
 st.markdown("---")
 st.subheader("🛠️ Admin Controls")
 
@@ -514,20 +463,19 @@ with col3:
 
 with col4:
     if st.button("🔧 System Info", use_container_width=True):
-        with st.expander("🛠️ Debug Information"):
-            debug_info = {
+        with st.expander("🛠️ System Information"):
+            st.json({
                 "current_admin": user_name,
                 "admin_role": user_role,
-                "plotly_available": PLOTLY_AVAILABLE,
-                "data_files_status": {
-                    "tasks.json": f"{len(tasks)} records",
-                    "posts.json": f"{len(posts)} records", 
-                    "feedback.json": f"{len(feedback)} records",
-                    "employees.json": f"{len(employees)} records"
+                "charts_engine": "Plotly" if PLOTLY_AVAILABLE else "HTML",
+                "data_files": {
+                    "tasks": len(tasks),
+                    "posts": len(posts),
+                    "feedback": len(feedback),
+                    "employees": len(employees)
                 },
                 "last_refresh": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-            st.json(debug_info)
+            })
 
 # ---------- FOOTER ----------
 st.markdown("---")
@@ -539,7 +487,7 @@ st.markdown(f"""
         🚀 <strong>Corporate Superapp Admin Dashboard</strong> - Enhanced Analytics Platform
     </p>
     <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; color: #8e9aaf;">
-        Admin: {user_name} | Role: {user_role} | Charts: {"Plotly" if PLOTLY_AVAILABLE else "HTML"} | Status: Online ✅
+        Admin: {user_name} | Role: {user_role} | Charts: {"Interactive Plotly" if PLOTLY_AVAILABLE else "HTML Fallback"} | Status: Online ✅
     </p>
 </div>
 """, unsafe_allow_html=True)
